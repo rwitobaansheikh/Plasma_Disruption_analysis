@@ -5,10 +5,10 @@ on:
     branches: [ "main" ]
 
 env:
-  AWS_REGION: eu-west-2
+  AWS_REGION: eu-north-1
   ECR_REPOSITORY: plasma-disruption-dashboard
-  ECS_SERVICE: plasma-disruption-service
-  ECS_CLUSTER: plasma-disruption-cluster
+  ECS_SERVICE: plasma-disruption
+  ECS_CLUSTER: plasma-disruption
   ECS_TASK_DEFINITION: task-def.json
   CONTAINER_NAME: plasma-disruption-container
 
@@ -64,8 +64,11 @@ jobs:
           # Wait 15 seconds for the new task to get its IP assigned
           sleep 15
           
-          # 1. Get the Task ARN
-          TASK_ARN=$(aws ecs list-tasks --cluster ${{ env.ECS_CLUSTER }} --service-name ${{ env.ECS_SERVICE }} --query 'taskArns[0]' --output text)
+          # 1. Get the Task ARN (prefer service task; fallback to any running task)
+          TASK_ARN=$(aws ecs list-tasks --cluster ${{ env.ECS_CLUSTER }} --service-name ${{ env.ECS_SERVICE }} --query 'taskArns[0]' --output text 2>/dev/null || true)
+          if [ -z "$TASK_ARN" ] || [ "$TASK_ARN" = "None" ]; then
+            TASK_ARN=$(aws ecs list-tasks --cluster ${{ env.ECS_CLUSTER }} --desired-status RUNNING --query 'taskArns[0]' --output text)
+          fi
           
           # 2. Get the Network Interface ID
           ENI_ID=$(aws ecs describe-tasks --cluster ${{ env.ECS_CLUSTER }} --tasks $TASK_ARN --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' --output text)
