@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  plasma-disruption:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=app.py
+    volumes:
+      - ./plasma_disruption_model.pt:/app/plasma_disruption_model.pt
+      - ./feature_scaler.pkl:/app/feature_scaler.pkl
+      - ./feature_columns.pkl:/app/feature_columns.pkl
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
