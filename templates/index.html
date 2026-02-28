@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plasma Disruption Detection Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ range(10000, 99999) | random }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🔥 Plasma Disruption Detection Dashboard</h1>
+                <p class="subtitle">Bayesian Neural Network with MC Dropout Uncertainty Quantification</p>
+            </div>
+            <div class="status-badge">
+                <span class="status-indicator"></span>
+                Model Ready
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Left Panel: Controls -->
+            <section class="control-panel">
+                <h2>Controls</h2>
+                
+                <!-- Generate Data Section -->
+                <div class="control-section">
+                    <h3>📊 Generate Data</h3>
+                    <div class="input-group">
+                        <label for="num-samples">Number of Samples:</label>
+                        <input type="number" id="num-samples" min="10" max="1000" value="100">
+                    </div>
+                    <button id="generate-btn" class="btn btn-primary">Generate Samples</button>
+                    <div id="generate-status" class="status-message"></div>
+                </div>
+
+                <!-- Predict Section -->
+                <div class="control-section">
+                    <h3>🎯 Predict</h3>
+                    <p class="help-text">Click to predict disruption probability for generated samples</p>
+                    <button id="predict-btn" class="btn btn-success" disabled>Predict</button>
+                    <div id="predict-status" class="status-message"></div>
+                </div>
+
+                <!-- Model Info -->
+                <div class="control-section info-section">
+                    <h3>ℹ️ Model Info</h3>
+                    <div id="model-info">Loading...</div>
+                </div>
+
+                <!-- Alert Levels -->
+                <div class="control-section alert-section">
+                    <h3>⚠️ Alert Levels</h3>
+                    <div class="alert-level high">
+                        <span class="alert-dot"></span>
+                        <span>HIGH: Top 33% probability</span>
+                    </div>
+                    <div class="alert-level medium">
+                        <span class="alert-dot"></span>
+                        <span>MEDIUM: Middle 33%</span>
+                    </div>
+                    <div class="alert-level low">
+                        <span class="alert-dot"></span>
+                        <span>LOW: Bottom 33% probability</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results -->
+            <section class="results-panel">
+                <!-- Statistics Cards -->
+                <div class="stats-container" id="stats-container">
+                    <div class="stat-card" data-stat="mean-prob">
+                        <h4>Mean Probability</h4>
+                        <p class="stat-value">—</p>
+                        <p class="stat-unit">Disruption Probability</p>
+                    </div>
+                    <div class="stat-card" data-stat="mean-uncertainty">
+                        <h4>Mean Uncertainty</h4>
+                        <p class="stat-value">—</p>
+                        <p class="stat-unit">Standard Deviation</p>
+                    </div>
+                    <div class="stat-card" data-stat="high-risk">
+                        <h4>High Risk</h4>
+                        <p class="stat-value stat-high">—</p>
+                        <p class="stat-unit">Samples</p>
+                    </div>
+                    <div class="stat-card" data-stat="medium-risk">
+                        <h4>Medium Risk</h4>
+                        <p class="stat-value stat-medium">—</p>
+                        <p class="stat-unit">Samples</p>
+                    </div>
+                </div>
+
+                <!-- Input Features Showcase -->
+                <div class="features-showcase" id="features-showcase" style="display:none;">
+                    <h3>🧬 Input Features (20 Physics-Based Signals)</h3>
+                    <div class="features-grid" id="features-grid"></div>
+                </div>
+
+                <!-- Per-Sample Confidence Intervals -->
+                <div class="chart-box" id="sample-ci-box" style="display:none;">
+                    <h3>🔍 Individual Sample Confidence Intervals (First 20 Samples)</h3>
+                    <div id="sample-ci-chart" style="height: 380px; max-width: 100%;"></div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-container">
+                    <!-- Probability Distribution Chart -->
+                    <div class="chart-box">
+                        <h3>Disruption Probability Distribution</h3>
+                        <canvas id="probability-chart"></canvas>
+                    </div>
+
+                    <!-- Confidence Intervals Chart -->
+                    <div class="chart-box">
+                        <h3>Predictions with Confidence Intervals</h3>
+                        <div id="confidence-chart" style="height: 380px; max-width: 100%;"></div>
+                    </div>
+
+                    <!-- Risk Distribution Chart -->
+                    <div class="chart-box">
+                        <h3>Risk Level Distribution</h3>
+                        <canvas id="risk-chart"></canvas>
+                    </div>
+
+                    <!-- Uncertainty vs Probability -->
+                    <div class="chart-box">
+                        <h3>Uncertainty vs Prediction Probability</h3>
+                        <canvas id="scatter-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Predictions Table -->
+                <div class="table-container">
+                    <h3>Detailed Predictions</h3>
+                    <div class="table-wrapper">
+                        <table id="predictions-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Disruption Prob</th>
+                                    <th>Confidence</th>
+                                    <th>95% CI</th>
+                                    <th>Alert Level</th>
+                                </tr>
+                            </thead>
+                            <tbody id="predictions-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Contact Developer -->
+        <footer class="contact-footer">
+            <div class="contact-content">
+                <h2>📬 Contact Developer</h2>
+                <div class="contact-links">
+                    <a href="https://linkedin.com/in/rwitobaansheikh" target="_blank" rel="noopener noreferrer" class="contact-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76s.78-1.76 1.75-1.76 1.75.79 1.75 1.76-.78 1.76-1.75 1.76zm13.5 11.27h-3v-5.6c0-3.37-4-3.12-4 0v5.6h-3v-10h3v1.77c1.4-2.59 7-2.78 7 2.48v5.75z"/></svg>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/rwitobaansheikh" target="_blank" rel="noopener noreferrer" class="contact-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.21.694.825.577 4.765-1.587 8.2-6.084 8.2-11.387 0-6.627-5.373-12-12-12z"/></svg>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="mailto:rwitobaansheikh@gmail.com" class="contact-item">
+                        <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4h-16c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2zm0 4l-8 5-8-5v-2l8 5 8-5v2z"/></svg>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='script.js') }}?v={{ range(10000, 99999) | random }}"></script>
+</body>
+</html>
