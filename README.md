@@ -62,20 +62,20 @@ See the full architecture diagram in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     User's Browser                       │
-│   Chart.js  ·  Plotly.js  ·  Interactive Dashboard       │
+│                     User's Browser                      │
+│   Chart.js  ·  Plotly.js  ·  Interactive Dashboard      │
 └──────────────────────┬──────────────────────────────────┘
                        │ HTTP (port 5000)
 ┌──────────────────────▼──────────────────────────────────┐
-│                    Flask Backend                          │
-│  /                  → Dashboard UI                       │
-│  /api/generate-data → Synthetic tokamak data             │
-│  /api/predict       → MC Dropout inference + UQ          │
-│  /api/model-info    → Model metadata                     │
+│                    Flask Backend                        │
+│  /                  → Dashboard UI                      │
+│  /api/generate-data → Synthetic tokamak data            │
+│  /api/predict       → MC Dropout inference + UQ         │
+│  /api/model-info    → Model metadata                    │
 └──────────────────────┬──────────────────────────────────┘
                        │
 ┌──────────────────────▼──────────────────────────────────┐
-│          Bayesian Neural Network (PyTorch)                │
+│          Bayesian Neural Network (PyTorch)              │
 │  Input(20) → Conv1D(16) → Dense(256→128→64) → Sigmoid   │
 │  MC Dropout: 50 forward passes → mean ± 1.96σ           │
 └─────────────────────────────────────────────────────────┘
