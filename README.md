@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/AWS-Fargate-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" />
 </p>
 
-# 🔥 Plasma Disruption Detection Dashboard
+# Plasma Disruption Detection Dashboard
 
 A real-time **Bayesian Neural Network** dashboard for detecting plasma disruptions in tokamak fusion reactors, powered by **Monte Carlo Dropout** uncertainty quantification.
 
@@ -47,7 +47,7 @@ The model ingests **20 physics-based plasma diagnostic signals** and outputs:
 |---------|-------------|
 | 🧠 **Bayesian Neural Network** | Conv1D + Dense layers with MC Dropout for uncertainty estimation |
 | 📊 **Interactive Dashboard** | Real-time charts for probability distribution, confidence intervals, and risk levels |
-| 🎯 **Uncertainty Quantification** | 50-sample Monte Carlo Dropout produces calibrated confidence intervals |
+| 🎯 **Uncertainty Quantification** | 50-sample Monte Carlo Dropout produces calibrated confidence interval |
 | 🔬 **Physics-Based Inputs** | 20 tokamak diagnostic signals across 3 plasma regimes (stable, marginal, disruptive) |
 | ⚠️ **Adaptive Alert System** | Percentile-based risk thresholds that calibrate per-batch |
 | 🐳 **Optimized Docker Image** | Multi-stage build with CPU-only PyTorch (~1.3 GB vs ~8 GB CUDA) |
